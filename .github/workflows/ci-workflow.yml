@@ -1,0 +1,48 @@
+# TIP: Use https://yamlvalidator.com/
+
+name: CI master branch
+# See https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+# For now, this workflow is triggered on pushes to the repository.
+on: [push]
+# NOTE: Is feasible to run on schedule (min 5 mins intervals)
+# NOTE: Is feasible to specify where the pushes must ocurr (e.g. master branchs)
+
+jobs:
+  # Build  is the ID of the only jobs (it may be "olaquease")
+  # see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
+  build:
+    name: Build Master branch
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }} # NOTE: Redudant, this is the default
+
+    steps:
+
+    # Load a copy of our repo into ${GITHUB_WORKSPACE}
+    # see https://github.com/actions/checkout
+    # NOTE: Tokens and SSH keys can be settled here
+    # NOTE: Submodules can also be settled here
+    # NOTE: Is possible to set OTHER (privates) repositories also
+    - uses: actions/checkout@v2
+
+    - name: Printing environment info
+      env:
+        MY_VAR: Hi there! My name is
+        FIRST_NAME: Mona
+        MIDDLE_NAME: The
+        LAST_NAME: Octocat
+      run: |
+        ls -lna; pwd; ls -lna ..
+
+    - name: Compiling...
+      run: make all
+
+    - name: Running the tests
+      run: ./bin/tests/test_01;  ./bin/tests/test_02
+
+    - name: Clean temp directory
+      run: make clean
