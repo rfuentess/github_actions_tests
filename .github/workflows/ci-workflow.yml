@@ -5,10 +5,11 @@ name: CI for PRs
 # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 # For now, this workflow is triggered on pushes to the repository.
 on:
-  # This should trigger the workflow ONLY when ommit(s) pushed to the pull request
+  # This should trigger the workflow when commit(s) are pushed to the pull request
+  # and when a PR is created
   pull_request:
     branches: [ develop ]
-    types: [synchronize]
+    types: [synchronize, opened]
 
 
 jobs:
