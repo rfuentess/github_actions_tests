@@ -1,9 +1,13 @@
 # TIP: Use https://yamlvalidator.com/
 
-name: CI master branch
+name: CD master branch
 # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 # For now, this workflow is triggered on pushes to the repository.
-on: [push]
+on:
+    push:
+        branches:
+            - master
+
 # NOTE: Is feasible to run on schedule (min 5 mins intervals)
 # NOTE: Is feasible to specify where the pushes must ocurr (e.g. master branchs)
 
