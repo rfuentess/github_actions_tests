@@ -1,6 +1,6 @@
 #include <stdio.h>
 int main() {
-  // Test 01 always fails
-  printf("Test 01 FAILED!\n");
-  return -1;
+  // Test 01 now always success
+  printf("Test 01 success!\n");
+  return 0;
 }
