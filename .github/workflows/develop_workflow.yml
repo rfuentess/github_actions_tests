@@ -1,0 +1,47 @@
+name: Validating Development Branch
+# See https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+# For now, this workflow is triggered on pushes to the repository.
+on:
+    push:
+        branches:
+            - develop
+
+
+jobs:
+  check_remote:
+    name: CD internal
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}
+
+    steps:
+    # Load a copy of our repo into ${GITHUB_WORKSPACE}
+    - uses: actions/checkout@v2
+
+    - name: Compiling...
+      run: make all
+
+    - name: Running the "CD tests"
+      run: echo "Imagine a new world of tests here"
+
+    # Just a PoC  for using HTTPie
+    # NOTE: Is possible to generate  personal access token, created separately,
+    # and stored as a secret.
+    # see https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
+    # NOTE: There was swinton/httpie-action@master but is considered deprecated
+  launch_external_feature:
+    name: Querying with HTTPie
+    runs-on: ubuntu-latest # Not sure
+
+    steps:
+    - name: Install HTTPie
+      run: sudo apt-get install httpie
+
+    - name: Sending notification
+      run: |
+        http GET  https://api.wattsense.com/v1/extras/bacnet/dataTypes
+    # NOTE: This require discern from a 200 cases from everything else :P
