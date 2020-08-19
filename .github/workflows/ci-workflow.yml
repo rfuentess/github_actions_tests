@@ -1,0 +1,45 @@
+# TIP: Use https://yamlvalidator.com/
+
+
+name: CI for PRs
+# See https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+# For now, this workflow is triggered on pushes to the repository.
+on:
+  # This should trigger the workflow ONLY when ommit(s) pushed to the pull request
+  pull_request:
+    branches: [ develop ]
+    types: [synchronize]
+
+
+jobs:
+  # Build  is the ID of the only jobs (it may be "olaquease")
+  # see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
+  CI_tests:
+    name: Run the CI test
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }} # NOTE: Redudant, this is the default
+
+    # NOTE: For this test the CD and CI are equivalent on steps to do
+    steps:
+
+    # Load a copy of our repo into ${GITHUB_WORKSPACE}
+    - uses: actions/checkout@v2
+      # NOTE: A checkout from a push (like the CD) is not the same as for pull_request
+      # For the latest is the reference to a merge
+      # The following lines should enforce that we reference the last commit instead that the merge
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Compiling...
+      run: make all
+
+    - name: Running the tests
+      run: ./bin/tests/test_01;  ./bin/tests/test_02
+
+    - name: Clean temp directory
+      run: make clean
